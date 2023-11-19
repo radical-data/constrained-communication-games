@@ -35,6 +35,7 @@
   },
   "type": "module",
   "dependencies": {
+    "@fontsource-variable/source-sans-3": "^5.0.18",
     "express": "^4.18.2",
     "socket.io": "^4.7.2",
     "socket.io-client": "^4.7.2"

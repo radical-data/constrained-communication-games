@@ -1,36 +1,85 @@
 import { Server } from 'socket.io';
-import { users } from './src/stores.ts';
-import type { Message } from './src/types.ts';
+import { users } from './src/stores';
+import type { Message } from './src/types';
+
+const waitingUsers: string[] = [];
+const rooms: string[] = [];
+
+function removeWaitingUser(waitingUsers: string[], username: string) {
+    const index = waitingUsers.indexOf(username);
+    if (index !== -1) {
+        waitingUsers.splice(index, 1);
+    }
+}
 
 export default function setUpSocketIO(server) {
     const io = new Server(server);
 
     io.on('connection', (socket) => {
-        // when user connects
-        const username = `${Math.round(Math.random() * 999999)}`;
-        socket.emit('name', username);
-        users.update((users) => [...users, username]);
-        users.subscribe((users) => console.log(users));
-        console.log(`new user connected: ${username}`);
+        socket.emit('name', socket.id);
+        console.log(`new user connected: ${socket.id}`);
+        console.log(socket.id)
+        socket.on('joinWaitingRoom', () => {
+            socket.join('waitingRoom');
 
-        socket.on('message', (message: Message) => {
-            io.emit('message', {
-                from: username,
+            // users.update((users) => [...users, username]);
+            // users.subscribe((users) => console.log(users));
+
+            console.log(`User ${socket.id} joined the waiting room`);
+            waitingUsers.push(socket.id);
+            setTimeout(() => {
+                tryPairUsers();
+            }, 1000);
+        });
+        socket.on('leftWaitingRoom', () => {
+            socket.leave('waitingRoom');
+            console.log(`User ${socket.id} left the waiting room`);
+            removeWaitingUser(waitingUsers, socket.id);
+        });
+
+        const tryPairUsers = () => {
+            if (waitingUsers.length >= 2) {
+                const [user1, user2] = waitingUsers.splice(0, 2);
+
+                const roomId = `${Math.random().toString(36).substr(2, 9)}`;
+                rooms.push(roomId);
+
+                io.to(user1).emit('joinRoom', roomId);
+                io.to(user2).emit('joinRoom', roomId);
+
+                console.log(`Users ${user1} and ${user2} paired in room ${roomId}`);
+            }
+        };
+
+        socket.on('joinChatRoom', (roomName) => {
+            socket.join(roomName);
+            console.log(`User ${socket.id} joined room ${roomName}`)
+        });
+
+        socket.on('leftChatRoom', (roomName) => {
+            socket.leave(roomName);
+            console.log(`User ${socket.id} left room ${roomName}`)
+        });
+
+        socket.on('message', (message: Message, roomName) => {
+            io.to(roomName).emit('message', {
+                from: socket.id,
                 message: message,
                 time: new Date().toLocaleString()
             });
-            console.log(`User ${username} sent a message: ${message}`);
+            console.log(`User ${socket.id} sent a message to room ${roomName}: ${message}`);
         });
 
         socket.on('disconnect', () => {
             users.subscribe((currentUsers) => {
-                const disconnectedUserIndex = currentUsers.findIndex((user) => user === username);
+                const disconnectedUserIndex = currentUsers.findIndex((user) => user === socket.id);
                 if (disconnectedUserIndex !== -1) {
                     const updatedUsers = [...currentUsers.slice(0, disconnectedUserIndex), ...currentUsers.slice(disconnectedUserIndex + 1)];
                     users.set(updatedUsers);
                 }
             });
-            console.log(`user disconnected: ${username}`);
+            removeWaitingUser(waitingUsers, socket.id);
+            console.log(`user disconnected: ${socket.id}`);
         });
     });
 
