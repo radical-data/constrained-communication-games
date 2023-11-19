@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { users } from '../stores';
 </script>
 
 <h1>Constrained Communication Games</h1>
