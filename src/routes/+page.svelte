@@ -1,2 +1,8 @@
-<h1>Welcome to SvelteKit</h1>
-<p>Visit <a href="https://kit.svelte.dev">kit.svelte.dev</a> to read the documentation</p>
+<script lang="ts">
+	import { users } from "../stores";
+</script>
+
+<h1>Constrained Communication Games</h1>
+<p>A playground to train for building connection in places built for the opposite.</p>
+<p>There {($users.length === 1) ? 'is' : `are`} {$users.length} {($users.length === 1) ? 'user' : `users`} online.</p>
+<a href="chat">Enter a chat</a>

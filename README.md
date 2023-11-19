@@ -1,28 +1,13 @@
-# create-svelte
+# Constrained Communication Games
 
-Everything you need to build a Svelte project, powered by [`create-svelte`](https://github.com/sveltejs/kit/tree/master/packages/create-svelte).
-
-## Creating a project
-
-If you're seeing this, you've probably already done this step. Congrats!
-
-```bash
-# create a new project in the current directory
-npm create svelte@latest
-
-# create a new project in my-app
-npm create svelte@latest my-app
-```
+A playground to train for building connection in places built for the opposite.
 
 ## Developing
 
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
+Once you've created a project and installed dependencies with `bun install`, start a development server:
 
 ```bash
-npm run dev
-
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
+bun --bun run dev
 ```
 
 ## Building
@@ -30,9 +15,17 @@ npm run dev -- --open
 To create a production version of your app:
 
 ```bash
-npm run build
+bun --bun run build
 ```
 
-You can preview the production build with `npm run preview`.
+## File guide
 
-> To deploy your app, you may need to install an [adapter](https://kit.svelte.dev/docs/adapters) for your target environment.
+The files involved in the socket.io server:
+
+- webSocketConnection.ts: This file establishes a WebSocket connection using Socket.IO and exports the io variable for use in other modules. It abstracts the connection logic, making it reusable and maintainable.
+- socketIoHandler.ts: This module contains the logic for the Socket.IO server. It handles connections, generates random usernames, and broadcasts messages to connected clients. The setUpSocketIO function initializes Socket.IO and defines event handlers.
+- webSocketPluginVite.ts: This file defines a Vite plugin that configures the WebSocket server. It utilizes the setUpSocketIO function to set up the Socket.IO server within Vite, enabling WebSocket functionality during development.
+- vite.config.ts: This file contains the Vite configuration, including the server setup and plugins. It imports the webSocketServer plugin, which integrates the WebSocket functionality into Vite.
+- Production only
+    - src/server.ts: This file sets up an Express server, integrates SvelteKit handlers, and initializes the Socket.IO server using setUpSocketIO. It effectively combines the HTTP server, SvelteKit, and Socket.IO.
+
