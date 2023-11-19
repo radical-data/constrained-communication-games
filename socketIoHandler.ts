@@ -58,6 +58,7 @@ export default function setUpSocketIO(server) {
 
         socket.on('leftChatRoom', (roomName) => {
             socket.leave(roomName);
+            io.to(roomName).emit('partnerLeft');
             console.log(`User ${socket.id} left room ${roomName}`)
         });
 
