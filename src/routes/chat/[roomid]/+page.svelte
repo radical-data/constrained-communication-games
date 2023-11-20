@@ -3,7 +3,7 @@
 	import { onMount, onDestroy } from 'svelte';
 	import type { Message, Mode } from '../../../types';
 	import { goto } from '$app/navigation';
-	import { formatTime } from '$lib/utils';
+	import { convertURLsToHTML, formatTime } from '$lib/utils';
 	import { modes } from '$lib/modes';
 
 	let textfield = '';
@@ -34,6 +34,7 @@
 		mode = getModeQueryParam();
 		console.log(mode);
 		selectedMode = getMode(modes, mode);
+		// selectedMode = modes[0];
 
 		const roomPath = window.location.pathname;
 		room = roomPath.substring(roomPath.lastIndexOf('/') + 1);
@@ -76,12 +77,12 @@
 </script>
 
 <h1>Room {room}</h1>
-<p>{selectedMode?.description}</p>
+<p>{@html selectedMode?.description}</p>
 {#each messages as message}
 	<p>
 		<b>{message.from}</b>
 		<i>{formatTime(message.time)}</i>
-		{message.message}
+		{@html convertURLsToHTML(message.message)}
 	</p>
 {/each}
 {#if partnerLeft}
