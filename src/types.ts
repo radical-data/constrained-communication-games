@@ -14,3 +14,9 @@ export interface Message {
     time: Date,
     room: string
 }
+
+export interface Mode {
+    name: string
+    description: string,
+    restrictMessage: (arg1: string) => boolean,
+}

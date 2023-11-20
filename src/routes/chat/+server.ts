@@ -1,12 +1,12 @@
-import http from 'http';
+import { createServer } from 'http';
 import express from 'express';
-import setUpSocketIO from '../../../socketIoHandler.js';
+import setUpSocket from '../../../socketHandler';
 import { handler } from '../../../build/handler.js';
 
 const app = express();
-const server = http.createServer(app);
+const server = createServer(app);
 
-setUpSocketIO(server);
+setUpSocket(server);
 
 app.use(handler);
 

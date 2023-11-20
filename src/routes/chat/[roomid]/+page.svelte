@@ -1,17 +1,42 @@
 <script lang="ts">
 	import { io } from '$lib/webSocketConnection.js';
 	import { onMount, onDestroy } from 'svelte';
-	import type { Message } from '../../../types';
+	import type { Message, Mode } from '../../../types';
 	import { goto } from '$app/navigation';
+	import { formatTime } from '$lib/utils';
+	import { modes } from '$lib/modes';
 
 	let textfield = '';
 	let messages: Message[] = [];
 	let room: string;
 	let partnerLeft = false;
-	function formatTime(dateTime: Date) {
-		return new Date(dateTime).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
+	let selectedMode: Mode;
+
+	let mode: string | null;
+
+	function getMode(modesOptions: Mode[], modeNameOption: string | null): Mode {
+		const selectedMode = modesOptions.find((m) => m.name === modeNameOption);
+
+		if (!selectedMode || modesOptions.filter((m) => m.name === modeNameOption).length !== 1) {
+			return modesOptions[0];
+		}
+
+		return selectedMode;
 	}
+
+	function getModeQueryParam(): string | null {
+		const queryString = window.location.search;
+		const urlParams = new URLSearchParams(queryString);
+		return urlParams.get('mode');
+	}
+
+
 	onMount(() => {
+		mode = getModeQueryParam()
+		console.log(mode);
+		selectedMode = getMode(modes, mode);
+
+
 		const roomPath = window.location.pathname;
 		room = roomPath.substring(roomPath.lastIndexOf('/') + 1);
 		io.emit('joinChatRoom', room);
@@ -22,11 +47,17 @@
 			partnerLeft = true;
 		});
 	});
+
+
 	function sendMessage() {
 		const message = textfield.trim();
 		if (!message) return;
 		textfield = '';
-		io.emit('message', message, room);
+		if (selectedMode.restrictMessage(message)) {
+			io.emit('message', message, room);
+		} else {
+			alert(selectedMode.description);
+		}
 	}
 	function newChat() {
 		io.emit('leftChatRoom', room);
@@ -38,7 +69,7 @@
 </script>
 
 <h1>Room {room}</h1>
-<p>The rules</p>
+<p>{selectedMode?.description}</p>
 {#each messages as message}
 	<p>
 		<b>{message.from}</b>

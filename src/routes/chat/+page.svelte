@@ -6,9 +6,9 @@
   
 	onMount(() => {
 		io.emit('joinWaitingRoom');
-        io.on('joinRoom', (roomId) => {
+        io.on('joinRoom', (roomId, mode) => {
             console.log(`Received joinRoom event for room ${roomId}`);
-            goto(`chat/${roomId}`);
+            goto(`chat/${roomId}?mode=${mode}`);
         });
 	});
     onDestroy(() => {
