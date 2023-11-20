@@ -16,22 +16,52 @@ function isWikipediaPage(message: string) {
 function isGiphyLink(message: string): boolean {
 	const giphyRegex = /^https?:\/\/giphy\.com\/gifs\/\w+-\w+-\w+/i;
 	return giphyRegex.test(message);
-  }
+}
+
+async function jumbleMessage(message: string): Promise<string> {
+    const words = message.split(/\s+/);
+    const jumbledWords = await Promise.all(words.map(async (word) => {
+        if (Math.random() < 0.5) {
+            return await getRandomWord();
+        }
+        return word;
+    }));
+    return jumbledWords.join(' ');
+}
+
+async function getRandomWord(): Promise<string> {
+    try {
+        const response = await fetch('https://random-word-api.herokuapp.com/word');
+        if (!response.ok) {
+            throw new Error('Failed to fetch random word');
+        }
+        const data = await response.json();
+        return data[0];
+    } catch (error) {
+        console.error('Error fetching random word:', error);
+        return ''; 
+    }
+}
 
 export const modes: Mode[] = [
 	{
 		name: "emoji",
 		description: "You can only chat through emojis. ",
-		restrictMessage: isOnlyEmojis
+		allowMessage: isOnlyEmojis
 	},
 	{
 		name: "gif",
 		description: "You can only chat through gifs.",
-		restrictMessage: isGiphyLink
+		allowMessage: isGiphyLink
 	},
 	{
 		name: "wikipedia",
 		description: "You can only chat through Wikipedia pages.",
-		restrictMessage: isWikipediaPage
+		allowMessage: isWikipediaPage
+	},
+	{
+		name: "jumble",
+		description: "You can write whatever you want, but half your words will be changed.",
+		processMessage: jumbleMessage
 	}
 ];

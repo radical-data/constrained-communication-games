@@ -30,12 +30,10 @@
 		return urlParams.get('mode');
 	}
 
-
 	onMount(() => {
-		mode = getModeQueryParam()
+		mode = getModeQueryParam();
 		console.log(mode);
 		selectedMode = getMode(modes, mode);
-
 
 		const roomPath = window.location.pathname;
 		room = roomPath.substring(roomPath.lastIndexOf('/') + 1);
@@ -48,12 +46,21 @@
 		});
 	});
 
-
-	function sendMessage() {
-		const message = textfield.trim();
+	async function sendMessage() {
+		let message = textfield.trim();
 		if (!message) return;
 		textfield = '';
-		if (selectedMode.restrictMessage(message)) {
+
+		if (!selectedMode.allowMessage || selectedMode.allowMessage(message)) {
+			if (selectedMode.processMessage) {
+				try {
+					// Call the asynchronous processMessage function
+					message = await selectedMode.processMessage(message);
+				} catch (error) {
+					console.error('Error processing message:', error);
+					return;
+				}
+			}
 			io.emit('message', message, room);
 		} else {
 			alert(selectedMode.description);
