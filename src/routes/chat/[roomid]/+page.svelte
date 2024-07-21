@@ -1,19 +1,20 @@
-<script>
+<script lang="ts">
 	import { io } from '$lib/webSocketConnection.js';
 	import { onMount, onDestroy } from 'svelte';
+	import type { Message, Mode } from '$lib/types';
 	import { goto } from '$app/navigation';
 	import { convertURLsToHTML, formatTime } from '$lib/utils';
 	import { modes } from '$lib/modes';
 
 	let textfield = '';
-	let messages = [];
-	let room;
+	let messages: Message[] = [];
+	let room: string;
 	let partnerLeft = false;
-	let selectedMode;
+	let selectedMode: Mode;
 
 	let mode;
 
-	function getMode(modesOptions, modeNameOption) {
+	function getMode(modesOptions: Mode[], modeNameOption: string | null): Mode {
 		const selectedMode = modesOptions.find((m) => m.name === modeNameOption);
 
 		if (!selectedMode || modesOptions.filter((m) => m.name === modeNameOption).length !== 1) {
@@ -23,7 +24,7 @@
 		return selectedMode;
 	}
 
-	function getModeQueryParam() {
+	function getModeQueryParam(): string | null {
 		const queryString = window.location.search;
 		const urlParams = new URLSearchParams(queryString);
 		return urlParams.get('mode');
