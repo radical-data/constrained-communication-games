@@ -14,7 +14,7 @@
   let selectedMode: Mode;
   let countdown = writable(10);
   let mode;
-  let timer;
+  let timer: number | NodeJS.Timeout;
 
   function getMode(modesOptions: Mode[], modeNameOption: string | null): Mode {
     const selectedMode = modesOptions.find((m) => m.name === modeNameOption);
