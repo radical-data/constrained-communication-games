@@ -5,14 +5,16 @@
 	import { goto } from '$app/navigation';
 	import { convertURLsToHTML, formatTime } from '$lib/utils';
 	import { modes } from '$lib/modes';
+	import { writable } from 'svelte/store';
 
 	let textfield = '';
 	let messages: Message[] = [];
 	let room: string;
 	let partnerLeft = false;
 	let selectedMode: Mode;
-
+	let countdown = writable(10);
 	let mode;
+	let timer;
 
 	function getMode(modesOptions: Mode[], modeNameOption: string | null): Mode {
 		const selectedMode = modesOptions.find((m) => m.name === modeNameOption);
@@ -43,6 +45,7 @@
 		});
 		io.on('partnerLeft', () => {
 			partnerLeft = true;
+			startCountdown();
 		});
 	});
 
@@ -54,7 +57,6 @@
 		if (!selectedMode.allowMessage || selectedMode.allowMessage(message)) {
 			if (selectedMode.processMessage) {
 				try {
-					// Call the asynchronous processMessage function
 					message = await selectedMode.processMessage(message);
 				} catch (error) {
 					console.error('Error processing message:', error);
@@ -68,16 +70,36 @@
 	}
 
 	function newChat() {
+		clearTimeout(timer);
 		io.emit('leftChatRoom', room);
 		goto('../chat');
 	}
 
+	function startCountdown() {
+		let timeLeft = 10;
+		countdown.set(timeLeft);
+
+		const interval = setInterval(() => {
+			timeLeft -= 1;
+			countdown.set(timeLeft);
+			if (timeLeft <= 0) {
+				clearInterval(interval);
+				goto('/');
+			}
+		}, 1000);
+
+		timer = setTimeout(() => {
+			goto('/');
+		}, 10000); // 10 seconds
+	}
+
 	onDestroy(() => {
+		clearTimeout(timer);
 		io.emit('leftChatRoom', room);
 	});
 </script>
 
-<h1>Room {room} </h1>
+<h1>Room {room}</h1>
 <h2>Challenge: {@html selectedMode?.name}</h2>
 <p>{@html selectedMode?.description}</p>
 {#each messages as message}
@@ -89,15 +111,29 @@
 {/each}
 {#if partnerLeft}
 	<p>Partner left</p>
+	<p>Click "New chat" or you will be returned to the home page in {$countdown} seconds.</p>
 {/if}
-<form action="#" on:submit|preventDefault={sendMessage}>
-	<input type="text" bind:value={textfield} placeholder="Type something..." />
-	<button type="submit">Send</button>
+<form action="#" on:submit|preventDefault={sendMessage} class:disabled={partnerLeft}>
+	<input
+		type="text"
+		bind:value={textfield}
+		placeholder="Type something..."
+		disabled={partnerLeft}
+	/>
+	<button type="submit" disabled={partnerLeft}>Send</button>
 </form>
 <button on:click={newChat}>New chat</button>
 
 <style>
 	form {
 		margin-block: 10px;
+	}
+	form.disabled {
+		opacity: 0.5;
+		pointer-events: none;
+	}
+	button[disabled] {
+		cursor: not-allowed;
+		opacity: 0.5;
 	}
 </style>
