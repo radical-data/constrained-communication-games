@@ -1,8 +1,18 @@
-import { createServer } from 'http';
-import express from 'express';
-import setUpSocket from './socketHandler';
+import { createServer } from "http";
+import cors from "cors";
+import express from "express";
+import setUpSocket from "./socketHandler";
 
 const app = express();
+
+const corsOptions = {
+  origin: "*",
+  methods: ["GET", "POST"],
+  allowedHeaders: ["Content-Type"],
+};
+
+app.use(cors(corsOptions));
+
 const server = createServer(app);
 
 setUpSocket(server);
