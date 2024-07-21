@@ -40,3 +40,39 @@ a:active {
   text-decoration: none;
   color: inherit;
 }
+
+/* reset button */
+button {
+  all: unset;
+  display: inline-block;
+  cursor: pointer;
+  text-align: center;
+  padding: 10px 20px;
+  border: 2px solid #fff;
+}
+
+button:hover,
+button:focus {
+  background-color: #fff;
+  color: #0011AA;
+}
+
+form input[type="text"] {
+  all: unset;
+  display: block;
+  width: min(90%, 600px);
+  margin: 10px 0;
+  padding: 10px;
+  border: 2px solid #fff;
+  background-color: #0011AA;
+  color: #fff;
+}
+
+form input[type="text"]::placeholder {
+  color: #fff;
+}
+
+form input[type="text"]:focus {
+  outline: none;
+  border-color: #ffffff;
+}

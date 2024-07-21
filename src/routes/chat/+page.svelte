@@ -16,7 +16,20 @@
     })
 </script>
 
-<h1>We have named you</h1>
-<p>{$username}</p>
-<p>We are assigning you a partner.</p>
+<h1>We have named you <span id="name">{$username}</span>.</h1>
+<p>Congratulations, it is a beautiful name.</p>
+<p>(It cannot be changed.)</p>
+<h2>We are assigning you a partner.</h2>
 <a href="/">Cancel</a>
+
+<style>
+    h1 {
+        font-size: 200px;
+        line-height: 80%;
+    }
+    #name {
+        color: #ffe500;
+        word-break: break-word;
+        white-space: normal;
+    }
+</style>

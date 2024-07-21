@@ -77,7 +77,8 @@
 	});
 </script>
 
-<h1>Room {room}</h1>
+<h1>Room {room} </h1>
+<h2>Challenge: {@html selectedMode?.name}</h2>
 <p>{@html selectedMode?.description}</p>
 {#each messages as message}
 	<p>
@@ -94,3 +95,9 @@
 	<button type="submit">Send</button>
 </form>
 <button on:click={newChat}>New chat</button>
+
+<style>
+	form {
+		margin-block: 10px;
+	}
+</style>
