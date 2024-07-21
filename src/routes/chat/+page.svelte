@@ -16,7 +16,7 @@
     })
 </script>
 
-<h1>Waiting Room</h1>
-<p>Hello user {$username}</p>
+<h1>We have named you</h1>
+<p>{$username}</p>
 <p>We are assigning you a partner.</p>
 <a href="/">Cancel</a>
