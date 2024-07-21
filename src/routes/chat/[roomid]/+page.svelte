@@ -1,20 +1,19 @@
-<script lang="ts">
+<script>
 	import { io } from '$lib/webSocketConnection.js';
 	import { onMount, onDestroy } from 'svelte';
-	import type { Message, Mode } from '$lib/types';
 	import { goto } from '$app/navigation';
 	import { convertURLsToHTML, formatTime } from '$lib/utils';
 	import { modes } from '$lib/modes';
 
 	let textfield = '';
-	let messages: Message[] = [];
-	let room: string;
+	let messages = [];
+	let room;
 	let partnerLeft = false;
-	let selectedMode: Mode;
+	let selectedMode;
 
-	let mode: string | null;
+	let mode;
 
-	function getMode(modesOptions: Mode[], modeNameOption: string | null): Mode {
+	function getMode(modesOptions, modeNameOption) {
 		const selectedMode = modesOptions.find((m) => m.name === modeNameOption);
 
 		if (!selectedMode || modesOptions.filter((m) => m.name === modeNameOption).length !== 1) {
@@ -24,7 +23,7 @@
 		return selectedMode;
 	}
 
-	function getModeQueryParam(): string | null {
+	function getModeQueryParam() {
 		const queryString = window.location.search;
 		const urlParams = new URLSearchParams(queryString);
 		return urlParams.get('mode');
@@ -34,7 +33,6 @@
 		mode = getModeQueryParam();
 		console.log(mode);
 		selectedMode = getMode(modes, mode);
-		// selectedMode = modes[0];
 
 		const roomPath = window.location.pathname;
 		room = roomPath.substring(roomPath.lastIndexOf('/') + 1);
@@ -67,10 +65,12 @@
 			alert(selectedMode.description);
 		}
 	}
+
 	function newChat() {
 		io.emit('leftChatRoom', room);
 		goto('../chat');
 	}
+
 	onDestroy(() => {
 		io.emit('leftChatRoom', room);
 	});
