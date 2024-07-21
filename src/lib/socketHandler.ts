@@ -65,7 +65,7 @@ export default function setUpSocket(server) {
             io.to(roomName).emit('message', {
                 from: socket.id,
                 message: message,
-                time: new Date().toLocaleString()
+                time: new Date()
             });
             console.log(`User ${socket.id} sent a message to room ${roomName}: ${message}`);
         });

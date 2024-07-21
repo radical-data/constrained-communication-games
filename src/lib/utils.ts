@@ -1,5 +1,5 @@
 export function formatTime(dateTime: Date) {
-    return new Date(dateTime).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
+    return new Date(dateTime).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit', second: '2-digit' });
 }
 
 export function convertURLsToHTML(text: string): string {
