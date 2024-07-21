@@ -1,4 +1,4 @@
-import type { Mode } from "../types";
+import type { Mode } from "./types";
 
 function isOnlyEmojis(str: string): boolean {
 	const emojiRegex = /[\p{Emoji}]/gu;

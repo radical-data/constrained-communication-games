@@ -1,6 +1,6 @@
 import { createServer } from 'http';
 import express from 'express';
-import setUpSocket from '../../../socketHandler';
+import setUpSocket from '../../lib/socketHandler';
 import { handler } from '../../../build/handler.js';
 
 const app = express();

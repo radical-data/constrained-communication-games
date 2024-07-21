@@ -1,5 +1,6 @@
 import { Server } from 'socket.io';
-import type { Message } from './src/types';
+import type { Message, Mode } from './types';
+import { modes } from './modes';
 
 const waitingUsers: string[] = [];
 
@@ -10,13 +11,16 @@ function removeWaitingUser(waitingUsers: string[], username: string) {
     }
 }
 
-export default function setUpSocketIO(server) {
-    const io = new Server(server);
+function assignMode(possibleModes: Mode[]): Mode {
+    const randomIndex = Math.floor(Math.random() * possibleModes.length);
+    return possibleModes[randomIndex];
+}
 
+export default function setUpSocket(server) {
+    const io = new Server(server);
     io.on('connection', (socket) => {
         socket.emit('name', socket.id);
         console.log(`new user connected: ${socket.id}`);
-        console.log(socket.id)
         socket.on('joinWaitingRoom', () => {
             socket.join('waitingRoom');
             console.log(`User ${socket.id} joined the waiting room`);
@@ -37,10 +41,12 @@ export default function setUpSocketIO(server) {
 
                 const roomId = `${Math.random().toString(36).substr(2, 9)}`;
 
-                io.to(user1).emit('joinRoom', roomId);
-                io.to(user2).emit('joinRoom', roomId);
+                const mode = assignMode(modes)
 
-                console.log(`Users ${user1} and ${user2} paired in room ${roomId}`);
+                io.to(user1).emit('joinRoom', roomId, mode.name);
+                io.to(user2).emit('joinRoom', roomId, mode.name);
+
+                console.log(`Users ${user1} and ${user2} paired in room ${roomId} in mode ${mode.name}`);
             }
         };
 

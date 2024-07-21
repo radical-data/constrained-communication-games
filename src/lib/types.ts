@@ -4,7 +4,7 @@ export interface User {
 
 export interface Room {
     id: string,
-    mode: "wikipedia" | "jumble" | "amazon",
+    mode: "wikipedia" | "jumble" | "amazon" | "free",
     users: string[]
 }
 
@@ -18,5 +18,6 @@ export interface Message {
 export interface Mode {
     name: string
     description: string,
-    restrictMessage: (arg1: string) => boolean,
+    allowMessage?: (arg1: string) => boolean,
+    processMessage?: (arg1: string) => string | Promise<string>,
 }
