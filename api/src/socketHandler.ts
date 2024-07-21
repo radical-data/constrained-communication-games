@@ -1,4 +1,5 @@
 import { Server } from 'socket.io';
+import { Server as HttpServer } from 'http';
 import type { Message, Mode } from './types';
 import { modes } from './modes';
 
@@ -16,7 +17,7 @@ function assignMode(possibleModes: Mode[]): Mode {
   return possibleModes[randomIndex];
 }
 
-export default function setUpSocket(server) {
+export default function setUpSocket(server: HttpServer) {
   const io = new Server(server);
   io.on('connection', (socket) => {
     socket.emit('name', socket.id);
