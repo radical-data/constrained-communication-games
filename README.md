@@ -27,5 +27,4 @@ The files involved in the socket.io server:
 - webSocketPluginVite.ts: This file defines a Vite plugin that configures the WebSocket server. It utilizes the setUpSocketIO function to set up the Socket.IO server within Vite, enabling WebSocket functionality during development.
 - vite.config.ts: This file contains the Vite configuration, including the server setup and plugins. It imports the webSocketServer plugin, which integrates the WebSocket functionality into Vite.
 - Production only
-    - src/server.ts: This file sets up an Express server, integrates SvelteKit handlers, and initializes the Socket.IO server using setUpSocketIO. It effectively combines the HTTP server, SvelteKit, and Socket.IO.
-
+  - src/server.ts: This file sets up an Express server, integrates SvelteKit handlers, and initializes the Socket.IO server using setUpSocketIO. It effectively combines the HTTP server, SvelteKit, and Socket.IO.
