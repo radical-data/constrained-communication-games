@@ -1,7 +1,6 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import { writable } from 'svelte/store';
-  import wavingHand from '$lib/assets/waving-hand-sign_1f44b.gif';
   import wavingHandApple from '$lib/assets/waving-hand_1f44b.png';
 
   // Define the type for the writable store
