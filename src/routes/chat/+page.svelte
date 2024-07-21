@@ -2,7 +2,7 @@
 	import { onMount, onDestroy } from 'svelte';
 	import { io } from '$lib/webSocketConnection';
 	import { goto } from '$app/navigation';
-    import { username } from '../../stores';
+    import { username } from '$lib/stores';
   
 	onMount(() => {
 		io.emit('joinWaitingRoom');

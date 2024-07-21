@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { io } from '$lib/webSocketConnection.js';
 	import { onMount, onDestroy } from 'svelte';
-	import type { Message, Mode } from '../../../types';
+	import type { Message, Mode } from '$lib/types';
 	import { goto } from '$app/navigation';
 	import { convertURLsToHTML, formatTime } from '$lib/utils';
 	import { modes } from '$lib/modes';

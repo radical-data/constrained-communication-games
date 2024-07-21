@@ -4,10 +4,10 @@ A playground to train for building connection in places built for the opposite.
 
 ## Developing
 
-Once you've created a project and installed dependencies with `bun install`, start a development server:
+Once you've created a project and installed dependencies with `npm install`, start a development server:
 
 ```bash
-bun --bun run dev
+npm run dev
 ```
 
 ## Building
@@ -15,7 +15,7 @@ bun --bun run dev
 To create a production version of your app:
 
 ```bash
-bun --bun run build
+npm run build
 ```
 
 ## File guide

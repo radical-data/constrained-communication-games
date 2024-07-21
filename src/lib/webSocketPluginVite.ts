@@ -1,8 +1,8 @@
-import setUpSocketIO from "./socketIoHandler";
+import setUpSocket from "./socketHandler";
 
 export const webSocketServer = {
     name: 'webSocketServer',
     configureServer(server) {
-        setUpSocketIO(server.httpServer);
+        setUpSocket(server.httpServer);
     }
 };
