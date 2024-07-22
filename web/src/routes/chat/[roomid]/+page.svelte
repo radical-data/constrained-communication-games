@@ -16,6 +16,8 @@
   let mode;
   let timer: number | NodeJS.Timeout;
 
+  const synth = window.speechSynthesis;
+
   function getMode(modesOptions: Mode[], modeNameOption: string | null): Mode {
     const selectedMode = modesOptions.find((m) => m.name === modeNameOption);
 
@@ -35,6 +37,18 @@
     return urlParams.get('mode');
   }
 
+  function speakMessage(text: string) {
+    if (synth.speaking) {
+      console.error('speechSynthesis.speaking');
+      return;
+    }
+    const utterThis = new SpeechSynthesisUtterance(text);
+    utterThis.rate = 0.2;
+    utterThis.pitch = 2;
+    utterThis.volume = 1;
+    synth.speak(utterThis);
+  }
+
   onMount(() => {
     mode = getModeQueryParam();
     console.log(mode);
@@ -45,6 +59,7 @@
     io.emit('joinChatRoom', room);
     io.on('message', (message) => {
       messages = [...messages, message];
+      speakMessage(message.message);
     });
     io.on('partnerLeft', () => {
       partnerLeft = true;
