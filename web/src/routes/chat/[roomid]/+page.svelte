@@ -15,6 +15,9 @@
   let countdown = writable(10);
   let mode;
   let timer: number | NodeJS.Timeout;
+  let soundEnabled = writable(false);
+
+  const synth = window.speechSynthesis;
 
   function getMode(modesOptions: Mode[], modeNameOption: string | null): Mode {
     const selectedMode = modesOptions.find((m) => m.name === modeNameOption);
@@ -35,6 +38,24 @@
     return urlParams.get('mode');
   }
 
+  function speakMessage(text: string) {
+    if (!$soundEnabled) return;
+
+    if (synth.speaking) {
+      console.error('speechSynthesis.speaking');
+      return;
+    }
+    const utterThis = new SpeechSynthesisUtterance(text);
+    utterThis.rate = 0.8;
+    utterThis.pitch = 1;
+    utterThis.volume = 1;
+    synth.speak(utterThis);
+  }
+
+  function toggleSound() {
+    soundEnabled.update((enabled) => !enabled);
+  }
+
   onMount(() => {
     mode = getModeQueryParam();
     console.log(mode);
@@ -45,6 +66,7 @@
     io.emit('joinChatRoom', room);
     io.on('message', (message) => {
       messages = [...messages, message];
+      speakMessage(message.message);
     });
     io.on('partnerLeft', () => {
       partnerLeft = true;
@@ -133,6 +155,15 @@
 </form>
 <button on:click={newChat}>New chat</button>
 
+<button on:click={toggleSound} class="sound-toggle">
+  {#if $soundEnabled}
+    🔊
+  {/if}
+  {#if !$soundEnabled}
+    🔇
+  {/if}
+</button>
+
 <style>
   form {
     margin-block: 10px;
@@ -144,5 +175,18 @@
   button[disabled] {
     cursor: not-allowed;
     opacity: 0.5;
+  }
+  .sound-toggle {
+    position: fixed;
+    bottom: 10px;
+    right: 10px;
+    background: none;
+    border: none;
+    font-size: 50px;
+    cursor: pointer;
+    font-family:
+      system-ui,
+      -apple-system,
+      BlinkMacSystemFont;
   }
 </style>
