@@ -1,5 +1,5 @@
 import ioClient from 'socket.io-client';
-const ENDPOINT = process.env.WS_ENDPOINT || 'http://localhost:3001/';
+const ENDPOINT = "https://ccg.stolenartifacts.org/api";
 
 const socket = ioClient(ENDPOINT);
 
