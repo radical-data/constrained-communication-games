@@ -4,8 +4,10 @@
   import type { Message, Mode } from '$lib/types';
   import { goto } from '$app/navigation';
   import { convertURLsToHTML, formatTime } from '$lib/utils';
-  import { modes } from '$lib/modes';
+  import { isGiphyLink, modes } from '$lib/modes';
   import { writable } from 'svelte/store';
+  import EmojiHelper from '$lib/components/EmojiHelper.svelte';
+  import GifHelper from '$lib/components/GifHelper.svelte';
 
   let textfield = '';
   let messages: Message[] = [];
@@ -18,6 +20,13 @@
   let soundEnabled = writable(false);
 
   const synth = typeof window !== 'undefined' ? window.speechSynthesis : null;
+
+  const helperComponents = {
+    EmojiHelper,
+    WikipediaHelper,
+    AmazonHelper,
+    GifHelper
+  };
 
   function getMode(modesOptions: Mode[], modeNameOption: string | null): Mode {
     const selectedMode = modesOptions.find((m) => m.name === modeNameOption);
@@ -33,9 +42,12 @@
   }
 
   function getModeQueryParam(): string | null {
-    const queryString = window.location.search;
-    const urlParams = new URLSearchParams(queryString);
-    return urlParams.get('mode');
+    if (typeof window !== 'undefined') {
+      const queryString = window.location.search;
+      const urlParams = new URLSearchParams(queryString);
+      return urlParams.get('mode');
+    }
+    return null;
   }
 
   function speakMessage(text: string) {
@@ -127,12 +139,19 @@
 <h1>Room {room}</h1>
 <h2>Challenge: {@html selectedMode?.name}</h2>
 <p>{@html selectedMode?.description}</p>
+{#if selectedMode?.helper}
+  <svelte:component this={helperComponents[selectedMode.helper]} />
+{/if}
 {#each messages as message}
-  <p>
+  <div>
     <b>{message.from}</b>
     <i>{formatTime(message.time)}</i>
-    {@html convertURLsToHTML(message.message)}
-  </p>
+    {#if isGiphyLink(message.message)}
+      <img src={message.message} alt="GIF" />
+    {:else}
+      <p>{@html convertURLsToHTML(message.message)}</p>
+    {/if}
+  </div>
 {/each}
 {#if partnerLeft}
   <p>Partner left</p>

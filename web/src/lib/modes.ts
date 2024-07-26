@@ -1,6 +1,6 @@
 import type { Mode } from './types';
 import emojiRegex from 'emoji-regex';
-
+import { GiphyFetch } from '@giphy/js-fetch-api';
 
 function isOnlyEmojis(str: string): boolean {
   const regex = emojiRegex();
@@ -15,9 +15,21 @@ function isWikipediaPage(message: string) {
   return wikipediaRegex.test(message);
 }
 
-function isGiphyLink(message: string): boolean {
-  const giphyRegex = /^https?:\/\/giphy\.com\/gifs\/\w+-\w+-\w+/i;
+export function isGiphyLink(message: string): boolean {
+  const giphyRegex = /^https?:\/\/(?:giphy\.com\/gifs\/\w+-\w+-\w+|media\d*\.giphy\.com\/media\/\w+\/\w+\.(gif|mp4)\?cid=\w+&ep=v1_gifs_search&rid=\w+\.(gif|mp4)&ct=g)/i;
   return giphyRegex.test(message);
+}
+
+const gf = new GiphyFetch(import.meta.env.VITE_GIPHY_API_KEY);
+
+async function getGiphyGifUrl(searchQuery: string): Promise<string> {
+  const { data: gifs } = await gf.search(searchQuery, { limit: 1 });
+  if (gifs.length > 0) {
+    console.log(gifs)
+    return gifs[0].images.original.url;
+  } else {
+    throw new Error('No GIFs found');
+  }
 }
 
 async function jumbleMessage(message: string): Promise<string> {
@@ -87,8 +99,15 @@ export const modes: Mode[] = [
   {
     name: 'gif',
     description:
-      "You can only chat through gifs.<br>You can copy-and-paste gifs from <a href='https://giphy.com' target='_blank'>Giphy</a>.",
-    allowMessage: isGiphyLink
+      "You can only chat through gifs.<br>Type your phrase and we will assign a gif for you.",
+    processMessage: async (message: string) => {
+      try {
+        const gifUrl = await getGiphyGifUrl(message);
+        return gifUrl;
+      } catch (error) {
+        return 'No GIFs found for your search.';
+      }
+    }
   },
   {
     name: 'wikipedia',
