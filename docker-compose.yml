@@ -19,7 +19,7 @@ services:
       - ccg-network
     environment:
       - NODE_ENV=production
-      - WS_ENDPOINT=https://ccg-api.stolenartifacts.org
+      - VITE_WS_ENDPOINT=http://api:3000
 
 networks:
   ccg-network:
