@@ -2,32 +2,32 @@
 
 # Development commands
 dev:
-	docker-compose -f docker-compose.dev.yml up --build
+	docker compose -f docker-compose.dev.yml up --build
 
 dev-detached:
-	docker-compose -f docker-compose.dev.yml up --build -d
+	docker compose -f docker-compose.dev.yml up --build -d
 
 dev-down:
-	docker-compose -f docker-compose.dev.yml down
+	docker compose -f docker-compose.dev.yml down
 
 dev-logs:
-	docker-compose -f docker-compose.dev.yml logs -f
+	docker compose -f docker-compose.dev.yml logs -f
 
 dev-build:
-	docker-compose -f docker-compose.dev.yml build
+	docker compose -f docker-compose.dev.yml build
 
 # Production commands
 prod:
-	docker-compose up --build
+	docker compose up --build
 
 prod-detached:
-	docker-compose up --build -d
+	docker compose up --build -d
 
 prod-down:
-	docker-compose down
+	docker compose down
 
 prod-logs:
-	docker-compose logs -f
+	docker compose logs -f
 
 prod-build:
-	docker-compose build
+	docker compose build
