@@ -2,7 +2,7 @@
   import { GiphyFetch } from '@giphy/js-fetch-api';
   import { writable } from 'svelte/store';
 
-  const gf = new GiphyFetch(import.meta.env.VITE_GIPHY_API_KEY);
+  const gf = new GiphyFetch("w8rOzHITsWrh8vSvSypYKq6p1ChTdtUZ");
   let searchQuery = '';
   let gifs = writable([]);
   let loading = writable(false);
