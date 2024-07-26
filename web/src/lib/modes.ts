@@ -1,8 +1,10 @@
 import type { Mode } from './types';
+import emojiRegex from 'emoji-regex';
+
 
 function isOnlyEmojis(str: string): boolean {
-  const emojiRegex = /[\p{Emoji}]/gu;
-  const emojisOnly = str.replace(emojiRegex, '');
+  const regex = emojiRegex();
+  const emojisOnly = str.replace(regex, '');
   return emojisOnly.length === 0;
 }
 
@@ -79,7 +81,8 @@ export const modes: Mode[] = [
     name: 'emoji',
     description:
       "You can only chat through emojis.<br>You can copy-and-paste emojis from <a href='https://emojipedia.com' target='_blank'>Emojipedia</a>.",
-    allowMessage: isOnlyEmojis
+    allowMessage: isOnlyEmojis,
+    helper: 'EmojiHelper'
   },
   {
     name: 'gif',
