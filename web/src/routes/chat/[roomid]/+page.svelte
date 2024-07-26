@@ -24,7 +24,6 @@
   const helperComponents = {
     EmojiHelper,
     WikipediaHelper,
-    AmazonHelper,
     GifHelper
   };
 
@@ -70,7 +69,6 @@
 
   onMount(() => {
     mode = getModeQueryParam();
-    console.log(mode);
     selectedMode = getMode(modes, mode);
 
     const roomPath = window.location.pathname;
@@ -79,7 +77,7 @@
     io.on('message', (message) => {
       messages = [...messages, message];
       speakMessage(message.message);
-    });
+    })
     io.on('partnerLeft', () => {
       partnerLeft = true;
       startCountdown();
