@@ -1,0 +1,38 @@
+services:
+  api:
+    build:
+      context: ./api
+      dockerfile: Dockerfile.dev
+    ports:
+      - "3001:3000"
+    volumes:
+      - ./api/src:/app/src
+      - ./api/package.json:/app/package.json
+      - ./api/tsconfig.json:/app/tsconfig.json
+    networks:
+      - ccg-network
+    environment:
+      - NODE_ENV=development
+      - PORT=3000
+
+  web:
+    build:
+      context: ./web
+      dockerfile: Dockerfile.dev
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./web/src:/web/src
+      - ./web/static:/web/static
+      - ./web/package.json:/web/package.json
+      - ./web/svelte.config.js:/web/svelte.config.js
+      - ./web/tsconfig.json:/web/tsconfig.json
+      - ./web/vite.config.ts:/web/vite.config.ts
+    networks:
+      - ccg-network
+    environment:
+      - NODE_ENV=development
+      - WS_ENDPOINT=http://localhost:3001
+
+networks:
+  ccg-network:
