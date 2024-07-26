@@ -23,7 +23,6 @@
 
   const helperComponents = {
     EmojiHelper,
-    WikipediaHelper,
     GifHelper
   };
 
@@ -77,7 +76,7 @@
     io.on('message', (message) => {
       messages = [...messages, message];
       speakMessage(message.message);
-    })
+    });
     io.on('partnerLeft', () => {
       partnerLeft = true;
       startCountdown();
