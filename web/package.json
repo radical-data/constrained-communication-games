@@ -33,6 +33,7 @@
   "type": "module",
   "dependencies": {
     "express": "^4.19.2",
+    "picmo": "^5.8.5",
     "socket.io-client": "^4.7.5"
   }
 }
