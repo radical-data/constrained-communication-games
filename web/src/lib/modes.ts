@@ -80,7 +80,7 @@ export const modes: Mode[] = [
   {
     name: 'emoji',
     description:
-      "You can only chat through emojis.<br>You can copy-and-paste emojis from <a href='https://emojipedia.com' target='_blank'>Emojipedia</a>.",
+      "You can only chat through emojis.<br>You can copy-and-paste emojis from the picker.",
     allowMessage: isOnlyEmojis,
     helper: 'EmojiHelper'
   },
