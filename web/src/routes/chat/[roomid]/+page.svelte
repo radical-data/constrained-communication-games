@@ -17,7 +17,7 @@
   let timer: number | NodeJS.Timeout;
   let soundEnabled = writable(false);
 
-  const synth = window.speechSynthesis;
+  const synth = typeof window !== 'undefined' ? window.speechSynthesis : null;
 
   function getMode(modesOptions: Mode[], modeNameOption: string | null): Mode {
     const selectedMode = modesOptions.find((m) => m.name === modeNameOption);
@@ -39,7 +39,7 @@
   }
 
   function speakMessage(text: string) {
-    if (!$soundEnabled) return;
+    if (!$soundEnabled || !synth) return;
 
     if (synth.speaking) {
       console.error('speechSynthesis.speaking');
