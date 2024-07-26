@@ -14,7 +14,7 @@ export function isGiphyLink(message: string): boolean {
   return giphyRegex.test(message);
 }
 
-const gf = new GiphyFetch(import.meta.env.VITE_GIPHY_API_KEY);
+const gf = new GiphyFetch("w8rOzHITsWrh8vSvSypYKq6p1ChTdtUZ");
 
 async function getGiphyGifUrl(searchQuery: string): Promise<string> {
   const { data: gifs } = await gf.search(searchQuery, { limit: 1 });
