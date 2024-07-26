@@ -18,6 +18,7 @@ export interface Message {
 export interface Mode {
   name: string;
   description: string;
-  allowMessage?: (arg1: string) => boolean;
-  processMessage?: (arg1: string) => string | Promise<string>;
+  allowMessage?: (message: string) => boolean;
+  processMessage?: (message: string) => Promise<string> | string;
+  helper?: string;
 }
